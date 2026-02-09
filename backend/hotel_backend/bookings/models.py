@@ -62,14 +62,14 @@ class Booking(models.Model):
     check_in_date = models.DateField(verbose_name="تاريخ الدخول")
     check_out_date = models.DateField(verbose_name="تاريخ الخروج")
     # تفاصيل مالية وحالة
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="السعر الإجمالي")
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="السعر الإجمالي", editable=False)
     status = models.CharField(max_length=20, choices=BOOKING_STATUS, default='pending', verbose_name="حالة الحجز")
     created_at = models.DateTimeField(auto_now_add=True)
     def clean(self):
         today = timezone.now().date()
         if self.check_in_date < today:
             raise ValidationError("لا يمكن حجز الغرفة بتاريخ قديم، يجب أن يبدأ الحجز من اليوم فصاعداً.")
-        if self.check_out_date < self.check_in_date:
+        if self.check_out_date <= self.check_in_date:
             raise ValidationError("تاريخ الخروج يجب أن يكون بعد تاريخ الدخول (على الأقل ليلة واحدة).")
         # ✅ التحقق من تداخل الحجوزات
         overlapping_bookings = Booking.objects.filter(
@@ -80,7 +80,11 @@ class Booking(models.Model):
 
         if overlapping_bookings.exists():
             raise ValidationError("هذه الغرفة محجوزة في هذا التاريخ.")
-
+    def save(self,*args, **kwargs):
+        self.full_clean()
+        deltaday = (self.check_out_date - self.check_in_date).days
+        self.total_price = deltaday * self.room.price_per_night
+        super().save(*args, **kwargs)
         
     def __str__(self):
         return f"حجز {self.guest} - غرفة {self.room.room_number}"
