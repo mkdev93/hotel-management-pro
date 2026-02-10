@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% block title %}إضافة حجز جديد{% endblock %}
+
+<!-- 88 -->
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0 text-center">تفاصيل الحجز الجديد 🏨</h4>
+      </div>
+      <div class="card-body">
+        <form method="post" novalidate>
+          {% csrf_token %} {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label fw-bold">{{ field.label }}</label>
+            {{ field }} {% if field.errors %}
+            <div class="text-danger small mt-1">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-success btn-lg">
+              تأكيد الحجز الآن ✅
+            </button>
+            <a href="{% url 'room_list' %}" class="btn btn-light">إلغاء</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var inputs = document.getElementsByTagName("input");
+  var selects = document.getElementsByTagName("select");
+  for (var i = 0; i < inputs.length; i++) {
+    inputs[i].classList.add("form-control");
+  }
+  for (var i = 0; i < selects.length; i++) {
+    selects[i].classList.add("form-select");
+  }
+</script>
+{% endblock %}

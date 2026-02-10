@@ -1,0 +1,36 @@
+{% extends 'base.html' %} {% block title %}قائمة الغرف{% endblock title %}
+{%block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>قائمة الغرف المتاحة</h2>
+</div>
+
+<div class="row">
+  {% for room in rooms %}
+  <div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">غرفة رقم: {{ room.room_number }}</h5>
+        <p class="card-text">
+          النوع:
+          <span class="badge bg-info text-dark"
+            >{{ room.get_room_type_display }}</span
+          >
+        </p>
+        <p class="card-text text-success fw-bold">
+          السعر: {{ room.price_per_night }} دج / ليلة
+        </p>
+      </div>
+      <div class="card-footer bg-transparent border-top-0">
+        <a
+          href="{% url 'book_room' %}?room={{ room.id }}"
+          class="btn btn-outline-primary w-100"
+          >احجز الآن</a
+        >
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-center">لا توجد غرف متاحة حالياً.</p>
+  {% endfor %}
+</div>
+{% endblock%}

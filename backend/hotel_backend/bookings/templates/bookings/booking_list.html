@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% block title %}سجل الحجوزات{% endblock %}
+<!--  -->
+{% block content %}
+<div class="card shadow">
+  <div
+    class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
+  >
+    <h4 class="mb-0">سجل الحجوزات الكلي 📑</h4>
+    <a href="{% url 'book_room' %}" class="btn btn-primary btn-sm"
+      >+ حجز جديد</a
+    >
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table
+        class="table table-hover table-striped mb-0 text-center align-middle"
+      >
+        <thead class="table-light">
+          <tr>
+            <th>الإسم</th>
+            <th>اللقب</th>
+            <th>رقم الغرفة</th>
+            <th>تاريخ الدخول</th>
+            <th>تاريخ الخروج</th>
+            <th>السعر الإجمالي</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in bookings %}
+          <tr>
+            <td class="fw-bold">{{ booking.guest.first_name }}</td>
+            <td class="fw-bold">{{ booking.guest.last_name }}</td>
+            <td>
+              <span class="badge bg-secondary"
+                >{{ booking.room.room_number }}</span
+              >
+            </td>
+            <td>{{ booking.check_in_date }}</td>
+            <td>{{ booking.check_out_date }}</td>
+            <td class="text-success fw-bold">{{ booking.total_price }} دج</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="py-5 text-muted">
+              لا توجد حجوزات مسجلة حالياً. <br />
+              <a href="{% url 'book_room' %}" class="btn btn-link"
+                >ابدأ بإضافة أول حجز</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
